@@ -127,7 +127,7 @@
 
       button:focus,
       button:hover,
-      .load-rom-label:focu,
+      .load-rom-label:focus,
       .load-rom-label:hover {
         color: #000;
         background-color: #48bef1;
@@ -230,6 +230,7 @@
 
         <button id="toggle-audio">Unmute</button>
         <button id="toggle-pause">Pause</button>
+        <button id="save-history" style="background-color: #e8fe57; color: black;">Save Input History</button>
 
         <div id="fps"></div>
       </div>
@@ -246,7 +247,7 @@
 
       <p>
         You can choose from a list of homebrew games, or load your own ROM which
-        uses the <a href="https://www.nesdev.org/wiki/INES">iNES</a> or
+        MUST BE in the <a href="https://www.nesdev.org/wiki/INES">iNES</a> or
         <a href="https://www.nesdev.org/wiki/NES_2.0">NES 2.0</a> format.
       </p>
 
@@ -269,14 +270,14 @@
           <td>B Button</td>
           <td>X</td>
         </tr>
-        <tr>
+        <!-- <tr>
           <td>A Button (Turbo)</td>
           <td>A</td>
         </tr>
         <tr>
           <td>B Button (Turbo)</td>
           <td>S</td>
-        </tr>
+        </tr> -->
         <tr>
           <td>Start Button</td>
           <td>Return</td>

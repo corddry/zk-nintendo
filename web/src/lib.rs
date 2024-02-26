@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use tetanes::{
     audio::{AudioMixer, NesAudioCallback},
     control_deck::ControlDeck,
@@ -23,7 +24,7 @@ pub struct Nes {
 }
 
 #[wasm_bindgen]
-#[derive(Debug, Copy, Clone)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 pub enum Button {
     // Turbo disabled
     A,
@@ -51,7 +52,7 @@ impl From<&Button> for JoypadBtnState {
     }
 }
 
-#[derive(Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 #[wasm_bindgen]
 pub struct ControllerEvent {
     pub btn: Button,
@@ -131,6 +132,10 @@ impl Nes {
 
     pub fn controller_history(&self) -> Vec<ControllerEvent> {
         self.controller_history.clone()
+    }
+
+    pub fn get_history_bytes(&self) -> Vec<u8> {
+        bincode::serialize(&self.controller_history).unwrap() //TODO Error handling
     }
 
     fn record_controller_event(&mut self, btn: Button, pressed: bool) {

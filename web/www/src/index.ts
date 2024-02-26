@@ -380,6 +380,20 @@ class State {
     }
   }
 
+  downloadHistory() { // TODO, currently not correctly being called
+    const bytes = this.nes.get_history_bytes();
+    const blob = new Blob([bytes]);
+    const fileName = "nes-input-history";
+    const url = URL.createObjectURL(blob);
+    const anchorElement = document.createElement('a');
+    anchorElement.href = url;
+    anchorElement.download = fileName;
+    anchorElement.click();
+    anchorElement.remove();
+    URL.revokeObjectURL(url);
+    console.log("Downloaded input history");
+  }
+
   loadRom(data: Uint8Array) {
     this.nes.load_rom(data);
 
@@ -671,6 +685,18 @@ const setupEventHandling = (state: State) => {
       "click",
       (evt: MouseEvent) => {
         state.pause(!state.paused);
+        (<HTMLElement>evt.currentTarget).blur();
+      },
+      false
+    );
+  }
+
+  const saveHistory = getElement("save-history");
+  if (saveHistory) {
+    saveHistory.addEventListener(
+      "click",
+      (evt: MouseEvent) => {
+        state.downloadHistory();
         (<HTMLElement>evt.currentTarget).blur();
       },
       false
