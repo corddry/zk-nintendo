@@ -19,6 +19,44 @@ pub struct Nes {
     sound: bool,
     dynamic_rate_control: bool,
     dynamic_rate_delta: f32,
+    controller_history: Vec<ControllerEvent>,
+}
+
+#[wasm_bindgen]
+#[derive(Debug, Copy, Clone)]
+pub enum Button {
+    // Turbo disabled
+    A,
+    B,
+    Select,
+    Start,
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+impl From<&Button> for JoypadBtnState {
+    fn from(btn: &Button) -> JoypadBtnState {
+        match btn {
+            Button::A => JoypadBtnState::A,
+            Button::B => JoypadBtnState::B,
+            Button::Select => JoypadBtnState::SELECT,
+            Button::Start => JoypadBtnState::START,
+            Button::Up => JoypadBtnState::UP,
+            Button::Down => JoypadBtnState::DOWN,
+            Button::Left => JoypadBtnState::LEFT,
+            Button::Right => JoypadBtnState::RIGHT,
+        }
+    }
+}
+
+#[derive(Clone)]
+#[wasm_bindgen]
+pub struct ControllerEvent {
+    pub btn: Button,
+    pub pressed: bool,
+    pub frame: u32,
 }
 
 #[wasm_bindgen]
@@ -42,6 +80,7 @@ impl Nes {
             sound: true,
             dynamic_rate_control: true,
             dynamic_rate_delta: max_delta,
+            controller_history: Vec::new(),
         }
     }
 
@@ -90,26 +129,46 @@ impl Nes {
         self.callback.clear();
     }
 
+    pub fn controller_history(&self) -> Vec<ControllerEvent> {
+        self.controller_history.clone()
+    }
+
+    fn record_controller_event(&mut self, btn: Button, pressed: bool) {
+        let frame = self.control_deck.frame_number();
+        self.controller_history.push(ControllerEvent {
+            btn: btn,
+            pressed,
+            frame,
+        });
+    }
+
     pub fn handle_event(&mut self, key: &str, pressed: bool, repeat: bool) -> bool {
         if repeat {
             return false;
         }
         let joypad = &mut self.control_deck.joypad_mut(Slot::One);
-        let mut matched = true;
-        match key {
-            "Enter" => joypad.set_button(JoypadBtnState::START, pressed),
-            "Shift" => joypad.set_button(JoypadBtnState::SELECT, pressed),
-            "a" => joypad.set_button(JoypadBtnState::TURBO_A, pressed),
-            "s" => joypad.set_button(JoypadBtnState::TURBO_B, pressed),
-            "z" => joypad.set_button(JoypadBtnState::A, pressed),
-            "x" => joypad.set_button(JoypadBtnState::B, pressed),
-            "ArrowUp" => joypad.set_button(JoypadBtnState::UP, pressed),
-            "ArrowDown" => joypad.set_button(JoypadBtnState::DOWN, pressed),
-            "ArrowLeft" => joypad.set_button(JoypadBtnState::LEFT, pressed),
-            "ArrowRight" => joypad.set_button(JoypadBtnState::RIGHT, pressed),
-            _ => matched = false,
+
+        let btn: Option<Button> = match key {
+            "Enter" => Some(Button::Start),
+            "Shift" => Some(Button::Select),
+            // "a" => Some(JoypadBtn::TURBO_A),
+            // "s" => Some(JoypadBtn::TURBO_B),
+            "z" => Some(Button::A),
+            "x" => Some(Button::B),
+            "ArrowUp" => Some(Button::Up),
+            "ArrowDown" => Some(Button::Down),
+            "ArrowLeft" => Some(Button::Left),
+            "ArrowRight" => Some(Button::Right),
+            _ => None,
+        };
+
+        if let Some(btn) = btn {
+            joypad.set_button(JoypadBtnState::from(&btn), pressed);
+            self.record_controller_event(btn, pressed);
+            true
+        } else {
+            false
         }
-        matched
     }
 }
 
