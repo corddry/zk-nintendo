@@ -380,7 +380,7 @@ class State {
     }
   }
 
-  downloadHistory() { // TODO, currently not correctly being called
+  downloadHistory() {
     const bytes = this.nes.get_history_bytes();
     const blob = new Blob([bytes]);
     const fileName = "nes-input-history";
