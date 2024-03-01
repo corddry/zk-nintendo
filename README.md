@@ -42,22 +42,24 @@ Each part has its own `Cargo.toml` file for managing Rust dependencies and a `sr
 To get started with ZK-Nintendo, follow these steps:
 
 0. Install Succinct SP1: https://succinctlabs.github.io/sp1/getting-started/install.html
-1. Clone the repository: `git clone https://github.com/your-username/zk-nintendo.git`
+1. Clone the repository: `git clone https://github.com/corddry/zk-nintendo.git`
 2. `cd zk-nintendo`
 
 ### Using the Web Interface
 Skip this step if you only want to prove the provided replays
 1. `cd web`
-2. Install the necessary dependencies: `npm install`
-3. Build the project: `sh bin/build.sh`
-4. Start the emulator: `sh bin/start.sh`
-5. Open http://localhost:8080/ 
-6. Use the web interface to load and play a ROM
+2. Install the necessary dependencies: `cd www & npm install`
+3. `cd ..`
+<!-- 4. If on M1 Mac: `export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/lib"` to fix linker issues -->
+4. Build the project: `sh bin/build.sh`
+5. Start the emulator: `sh bin/start.sh`
+6. Open http://localhost:8080/ 
+7. Use the web interface to load and play a ROM
 
 NOTE: Tetanes is only compatible with iNES or NES2.0 formatted ROMs. If the emulator doesn't react when attempting to load a ROM, it is likely that the ROM is not iNES or NES2.0 formatted
 
-7. Click "Save Input History" to download a replay file
-8. Move this replay file to zk-nintendo/script/replays/
+8. Click "Save Input History" to download a replay file
+9. Move this replay file to zk-nintendo/script/replays/
 
 ### Compiling the Program
 1. `cd zk-nintendo/program`
