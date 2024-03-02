@@ -2,6 +2,9 @@
 
 ![Zelda Screenshot](zeldascreenshot.png)
 
+## Known Issues
+ZK-Nintendo's proving script requires a large amount of memory to execute. It is unlikely that the script will execute on your local machine, or even a really beefy AWS instance, given the current state of the zkVM and of the repository
+
 ## Overview
 
 ZK-Nintendo combines NES emulation with zero knowledge proofs. By leveraging Succinct's SP1 ZK virtual machine, we are able to prove the execution of a modified, headless, NES emulator (see https://github.com/corddry/tetanes)
@@ -48,7 +51,7 @@ To get started with ZK-Nintendo, follow these steps:
 ### Using the Web Interface
 Skip this step if you only want to prove the provided replays
 1. `cd web`
-2. Install the necessary dependencies: `cd www & npm install`
+2. Install the necessary dependencies: `cd www` & `npm install`
 3. `cd ..`
 <!-- 4. If on M1 Mac: `export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/lib"` to fix linker issues -->
 4. Build the project: `sh bin/build.sh`
@@ -77,7 +80,3 @@ Note: if only proving the included ROM and replay, skip to step 5
 4. Edit the include_bytes! macro in script/src/main.rs to reflect your replay and ROM files
 5. Generate the proof with logging: `RUST_LOG=info cargo run --release`
 6. If successful, a screenshot of the NES frame after replaying all of your inputs will be saved to script/ProvenImage.png
-
-## Known Issues
-ZK-Nintendo's proving script requires a large amount of memory to execute. It is unlikely that the script will execute on your local machine.
-
